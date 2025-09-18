@@ -23,4 +23,6 @@ public class Peliculas {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categorias categorias_id;
+
+
 }

@@ -3,8 +3,8 @@ package com.trainee.Cinefinder.model;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigInteger;
