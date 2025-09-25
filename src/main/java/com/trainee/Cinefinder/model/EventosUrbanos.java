@@ -1,10 +1,7 @@
 package com.trainee.Cinefinder.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -12,6 +9,7 @@ import java.util.Date;
 @Entity (name = "EventosUrbanos")
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Builder
 @Table (name = "eventos_urbanos")
 public class EventosUrbanos {
@@ -28,6 +26,7 @@ public class EventosUrbanos {
     @Column (name = "lugar")
     private String lugar;
     @ManyToOne
+    @NonNull
     @JoinColumn(name = "categoria_id")
     private Categorias categorias_id;
 }

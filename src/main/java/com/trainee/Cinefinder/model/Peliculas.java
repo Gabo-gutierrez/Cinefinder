@@ -6,6 +6,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Builder
 @Table (name = "peliculas")
@@ -21,6 +22,7 @@ public class Peliculas {
     @Column (name = "duracion")
     private Integer duracion;
     @ManyToOne
+    @NonNull
     @JoinColumn(name = "categoria_id")
     private Categorias categorias_id;
 

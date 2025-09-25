@@ -10,6 +10,7 @@ import lombok.*;
 @Entity (name = "Participaciones")
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Builder
 @Table (name = "participaciones")
 public class Participaciones {
@@ -19,6 +20,7 @@ public class Participaciones {
     private Integer id;
     @Column (name = "artista_dni")
     @NotNull
+    @NonNull
     @NotBlank
     @Valid
     private Long artista_dni;

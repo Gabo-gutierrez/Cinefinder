@@ -13,10 +13,12 @@ import java.math.BigInteger;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Builder
 @Table (name = "artistas")
 public class Artistas {
     @Id
+    @NonNull
     @Column (name = "dni")
     @NotNull
     @NotBlank
