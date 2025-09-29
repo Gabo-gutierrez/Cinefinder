@@ -1,10 +1,8 @@
 package com.trainee.Cinefinder.service.impl;
 
-import com.trainee.Cinefinder.mapper.CategoriasMapper;
 import com.trainee.Cinefinder.model.Categorias;
 import com.trainee.Cinefinder.model.dto.CategoriasDto;
 import com.trainee.Cinefinder.repository.CategoriaRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,10 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class CategoriasServicesImplTest {
@@ -27,12 +23,8 @@ class CategoriasServicesImplTest {
     @Mock
     CategoriaRepository categoriaRepository;
 
-    CategoriasMapper categoriasMapper = mock(CategoriasMapper.class);
-
     @InjectMocks
     CategoriasServicesImpl categoriasServicesImpl;
-
-
 
     @Test
     void getCategorias() {
@@ -56,6 +48,19 @@ class CategoriasServicesImplTest {
 
     @Test
     void getCategoriasPorNombre() {
+        var categoria1 = new Categorias(1, "Drama");
+        var categoria2 = new Categorias(2, "Terror");
+
+        when(categoriaRepository.findByNombre("Drama")).thenReturn(Optional.of(categoria1));
+        when(categoriaRepository.findByNombre("Terror")).thenReturn(Optional.of(categoria2));
+
+        Optional<CategoriasDto> respuesta = categoriasServicesImpl.getCategoriasPorNombre("Drama");
+        Optional<CategoriasDto> respuesta1 = categoriasServicesImpl.getCategoriasPorNombre("Terror");
+
+        assertTrue(respuesta.isPresent());
+        assertEquals(respuesta.get().nombre(), categoria1.getNombre());
+        assertTrue(respuesta1.isPresent());
+        assertEquals(respuesta1.get().nombre(), categoria2.getNombre());
     }
 
     @Test
