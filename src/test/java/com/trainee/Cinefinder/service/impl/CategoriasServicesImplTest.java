@@ -1,5 +1,6 @@
 package com.trainee.Cinefinder.service.impl;
 
+import com.trainee.Cinefinder.exceptions.RecursoNoEncontradoException;
 import com.trainee.Cinefinder.model.Categorias;
 import com.trainee.Cinefinder.model.dto.CategoriasDto;
 import com.trainee.Cinefinder.repository.CategoriaRepository;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,20 +36,20 @@ class CategoriasServicesImplTest {
         var categoriaDto1 = new CategoriasDto(1, "Drama");
         var categoriaDto2 = new CategoriasDto(2, "Terror");
 
-
-        //when
         when(categoriaRepository.findAll()).thenReturn(Arrays.asList(categoria1, categoria2));
 
+        //when
         List<CategoriasDto> response = categoriasServicesImpl.getCategorias();
+
         //then
-
-        assertEquals(response.get(0).id(), categoriaDto1.id());
-        assertEquals(response.get(1).id(), categoriaDto2.id());
-
+        assertEquals(2, response.size());
+        assertEquals(response.get(0), categoriaDto1);
+        assertEquals(response.get(1), categoriaDto2);
+        verify(categoriaRepository).findAll();
     }
 
     @Test
-    void getCategoriasPorNombre() {
+    void getCategoriasPorNombreCuandoExiste() {
         var categoria1 = new Categorias(1, "Drama");
         var categoria2 = new Categorias(2, "Terror");
 
@@ -61,6 +63,20 @@ class CategoriasServicesImplTest {
         assertEquals(respuesta.get().nombre(), categoria1.getNombre());
         assertTrue(respuesta1.isPresent());
         assertEquals(respuesta1.get().nombre(), categoria2.getNombre());
+        verify(categoriaRepository).findByNombre("Drama");
+        verify(categoriaRepository).findByNombre("Terror");
+
+    }
+
+    @Test
+    void getCategoriasPorNombreCuandoNoExiste() {
+        when(categoriaRepository.findByNombre("Comedia")).thenReturn(Optional.empty());
+
+        assertThrows(RecursoNoEncontradoException.class,
+                ()  -> categoriasServicesImpl.getCategoriasPorNombre("Comedia")
+        );
+
+        verify(categoriaRepository).findByNombre("Comedia");
     }
 
     @Test
