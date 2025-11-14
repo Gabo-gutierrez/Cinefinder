@@ -17,8 +17,8 @@ public class ParticipacionesController {
   private final ParticipacionesServices participacionesServices;
 
   @GetMapping
-  public List<ParticipacionesDto> getParticipaciones(){
-    return participacionesServices.getParticipaciones();
+  public List<ParticipacionesDto> consultar(){
+    return participacionesServices.consultar();
   }
 
   @GetMapping("/{tipo_evento}")
@@ -27,20 +27,20 @@ public class ParticipacionesController {
   }
 
   @PostMapping()
-  public ResponseEntity<ParticipacionesDto> crearParticipacion(@RequestBody ParticipacionesDto dto){
-    ParticipacionesDto creada = participacionesServices.guardarParticipacion(dto);
+  public ResponseEntity<ParticipacionesDto> guardar(@RequestBody ParticipacionesDto dto){
+    ParticipacionesDto creada = participacionesServices.guardar(dto);
     return new ResponseEntity<>(creada, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ParticipacionesDto> actualizarParticipacion(
+  public ResponseEntity<ParticipacionesDto> actualizar(
           @PathVariable Integer id,
           @RequestBody ParticipacionesDto dto) {
-    return ResponseEntity.ok(participacionesServices.actualizarParticipacion(id, dto));
+    return ResponseEntity.ok(participacionesServices.actualizar(id, dto));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> eliminarParticipacion(@PathVariable Integer id){
-    return ResponseEntity.ok(participacionesServices.eliminarParticipacion(id));
+  public ResponseEntity<Void> eliminar(@PathVariable Integer id){
+    return ResponseEntity.ok(participacionesServices.eliminar(id));
   }
 }

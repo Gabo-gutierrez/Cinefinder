@@ -24,7 +24,7 @@ public class EventosUrbanosServicesImpl implements EventosUrbanosServices {
     private final CategoriaRepository categoriasRespositorio;
 
     @Override
-    public List<EventosUrbanosDto> getEventosUrbanos(){
+    public List<EventosUrbanosDto> consultar(){
         return eventosUrbanosRepositorio.findAll()
                 .stream()
                 .map(EventosUrbanosMapper::EventosUrbanosToDto)
@@ -39,7 +39,7 @@ public class EventosUrbanosServicesImpl implements EventosUrbanosServices {
     }
 
     @Override
-    public EventosUrbanosDto guardarEventoUrbano(EventosUrbanosDto dto){
+    public EventosUrbanosDto guardar(EventosUrbanosDto dto){
         Optional<EventosUrbanos> existente = eventosUrbanosRepositorio.findByTitulo(dto.titulo());
         if (existente.isPresent()){
             throw new EventoUrbanoTituloYaExistenteException(dto.titulo());
@@ -52,7 +52,7 @@ public class EventosUrbanosServicesImpl implements EventosUrbanosServices {
     }
 
     @Override
-    public EventosUrbanosDto actualizarEventoUrbano(Integer id, EventosUrbanosDto dto) {
+    public EventosUrbanosDto actualizar(Integer id, EventosUrbanosDto dto) {
         try{
             EventosUrbanos eventoUrbano = eventosUrbanosRepositorio.findById(id)
                     .orElseThrow(() -> new RecursoNoEncontradoException("EventoUrbano con id: " + id + " no encontrada"));
@@ -73,7 +73,7 @@ public class EventosUrbanosServicesImpl implements EventosUrbanosServices {
     }
 
     @Override
-    public Void eliminarEventoUrbano(Integer id) {
+    public Void eliminar(Integer id) {
         try {
             if (!eventosUrbanosRepositorio.existsById(id)){
                 throw new RecursoNoEncontradoException("EventoUrbano con el ID:" + id + " no se encuentra.");

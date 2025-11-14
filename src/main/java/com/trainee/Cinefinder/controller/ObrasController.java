@@ -17,8 +17,8 @@ public class ObrasController {
     private final ObrasServices ObrasServices;
 
     @GetMapping
-    public List<ObrasDto> getObras(){
-        return ObrasServices.getObras();
+    public List<ObrasDto> consultar(){
+        return ObrasServices.consultar();
     }
 
     @GetMapping("/{titulo}")
@@ -27,20 +27,20 @@ public class ObrasController {
     }
 
     @PostMapping()
-    public ResponseEntity<ObrasDto> crearObra(@RequestBody ObrasDto dto){
-        ObrasDto creada = ObrasServices.guardarObra(dto);
+    public ResponseEntity<ObrasDto> guardar(@RequestBody ObrasDto dto){
+        ObrasDto creada = ObrasServices.guardar(dto);
         return new ResponseEntity<>(creada, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ObrasDto> actualizarObra(
+    public ResponseEntity<ObrasDto> actualizar(
             @PathVariable Integer id,
             @RequestBody ObrasDto dto) {
-        return ResponseEntity.ok(ObrasServices.actualizarObra(id, dto));
+        return ResponseEntity.ok(ObrasServices.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarObra(@PathVariable Integer id){
-        return ResponseEntity.ok(ObrasServices.eliminarObra(id));
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id){
+        return ResponseEntity.ok(ObrasServices.eliminar(id));
     }
 }

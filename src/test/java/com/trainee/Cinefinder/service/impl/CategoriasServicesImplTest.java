@@ -39,7 +39,7 @@ class CategoriasServicesImplTest {
         when(categoriaRepository.findAll()).thenReturn(Arrays.asList(categoria1, categoria2));
 
         //when
-        List<CategoriasDto> response = categoriasServicesImpl.getCategorias();
+        List<CategoriasDto> response = categoriasServicesImpl.consultar();
 
         //then
         assertEquals(2, response.size());

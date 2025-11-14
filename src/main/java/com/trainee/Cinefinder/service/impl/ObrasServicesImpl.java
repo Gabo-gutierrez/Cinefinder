@@ -24,7 +24,7 @@ public class ObrasServicesImpl implements ObrasServices {
     private final CategoriaRepository categoriasRespositorio;
 
     @Override
-    public List<ObrasDto> getObras(){
+    public List<ObrasDto> consultar(){
         return ObrasRepositorio.findAll()
                 .stream()
                 .map(ObrasMapper::ObrasToDto)
@@ -39,7 +39,7 @@ public class ObrasServicesImpl implements ObrasServices {
     }
 
     @Override
-    public ObrasDto guardarObra(ObrasDto dto){
+    public ObrasDto guardar(ObrasDto dto){
         Optional<Obras> existente = ObrasRepositorio.findByTitulo(dto.titulo());
         if (existente.isPresent()){
             throw new ObraTituloYaExistenteException(dto.titulo());
@@ -52,7 +52,7 @@ public class ObrasServicesImpl implements ObrasServices {
     }
 
     @Override
-    public ObrasDto actualizarObra(Integer id, ObrasDto dto) {
+    public ObrasDto actualizar(Integer id, ObrasDto dto) {
         try{
             Obras Obra = ObrasRepositorio.findById(id)
                     .orElseThrow(() -> new RecursoNoEncontradoException("Obra con id: " + id + " no encontrada"));
@@ -72,7 +72,7 @@ public class ObrasServicesImpl implements ObrasServices {
     }
 
     @Override
-    public Void eliminarObra(Integer id) {
+    public Void eliminar(Integer id) {
         try {
             if (!ObrasRepositorio.existsById(id)){
                 throw new RecursoNoEncontradoException("Obra con el ID:" + id + " no se encuentra.");

@@ -20,7 +20,7 @@ public class CategoriasServicesImpl implements CategoriasServices {
     private final CategoriaRepository categoriaRepositorio;
 
     @Override
-    public List<CategoriasDto> getCategorias() {
+    public List<CategoriasDto> consultar() {
         return categoriaRepositorio.findAll()
                 .stream()
                 .map(CategoriasMapper::categoriasToDto)
@@ -36,7 +36,7 @@ public class CategoriasServicesImpl implements CategoriasServices {
     }
 
     @Override
-    public CategoriasDto guardarCategoria(CategoriasDto dto) {
+    public CategoriasDto guardar(CategoriasDto dto) {
         Optional<Categorias> existente = categoriaRepositorio.findByNombre(dto.nombre());
         if (existente.isPresent()) {
             throw new CategoriaNombreYaExistenteException(dto.nombre());
@@ -49,7 +49,7 @@ public class CategoriasServicesImpl implements CategoriasServices {
     }
 
     @Override
-    public CategoriasDto actualizarCategoria(Integer id, CategoriasDto dto) {
+    public CategoriasDto actualizar(Integer id, CategoriasDto dto) {
         try {
             Categorias categoria = categoriaRepositorio.findById(id)
                     .orElseThrow(() -> new RecursoNoEncontradoException("Categoría no encontrada con ID: " + id));
@@ -65,7 +65,7 @@ public class CategoriasServicesImpl implements CategoriasServices {
     }
 
     @Override
-    public Void eliminarCategoria(Integer id) {
+    public Void eliminar(Integer id) {
         if (!categoriaRepositorio.existsById(id)) {
             throw new RecursoNoEncontradoException("Categoría no encontrada con ID: " + id);
         }

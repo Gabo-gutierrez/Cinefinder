@@ -17,8 +17,8 @@ public class CategoriasController {
     private final CategoriasServices categoriasServices;
 
     @GetMapping
-    public List<CategoriasDto> getCategorias(){
-        return categoriasServices.getCategorias();
+    public List<CategoriasDto> consultar(){
+        return categoriasServices.consultar();
     }
     @GetMapping("/{nombre}")
     public Optional<CategoriasDto> findCategoriasPorNombre(@PathVariable String nombre){
@@ -27,22 +27,22 @@ public class CategoriasController {
 
     // POST insertar
     @PostMapping()
-    public ResponseEntity<CategoriasDto> crearCategoria(@RequestBody CategoriasDto dto) {
-        CategoriasDto creada = categoriasServices.guardarCategoria(dto);
+    public ResponseEntity<CategoriasDto> guardar(@RequestBody CategoriasDto dto) {
+        CategoriasDto creada = categoriasServices.guardar(dto);
         return new ResponseEntity<>(creada, HttpStatus.CREATED);
     }
 
     // PUT - Actualizar
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriasDto> actualizarCategoria(
+    public ResponseEntity<CategoriasDto> actualizar(
             @PathVariable Integer id,
             @RequestBody CategoriasDto dto) {
-            return ResponseEntity.ok(categoriasServices.actualizarCategoria(id, dto));
+            return ResponseEntity.ok(categoriasServices.actualizar(id, dto));
     }
 
     // DELETE - Eliminar
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCategoria(@PathVariable Integer id) {
-        return ResponseEntity.ok(categoriasServices.eliminarCategoria(id));
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        return ResponseEntity.ok(categoriasServices.eliminar(id));
     }
 }

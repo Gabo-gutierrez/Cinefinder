@@ -23,7 +23,7 @@ public class ParticipacionesServicesImpl implements ParticipacionesServices {
     private final ArtistaRepository artistasRespositorio;
 
     @Override
-    public List<ParticipacionesDto> getParticipaciones(){
+    public List<ParticipacionesDto> consultar(){
         return participacionesRepositorio.findAll()
                 .stream()
                 .map(ParticipacionesMapper::participacionesToDto)
@@ -38,14 +38,14 @@ public class ParticipacionesServicesImpl implements ParticipacionesServices {
     }
 
     @Override
-    public ParticipacionesDto guardarParticipacion(ParticipacionesDto dto){
+    public ParticipacionesDto guardar(ParticipacionesDto dto){
         Participaciones participacion = ParticipacionesMapper.participacionesToEntity(dto);
         participacion = participacionesRepositorio.save(participacion);
         return ParticipacionesMapper.participacionesToDto(participacion);
     }
 
     @Override
-    public ParticipacionesDto actualizarParticipacion(Integer id, ParticipacionesDto dto) {
+    public ParticipacionesDto actualizar(Integer id, ParticipacionesDto dto) {
         try{
             Participaciones participacion = participacionesRepositorio.findById(Long.valueOf(id))
                     .orElseThrow(() -> new RecursoNoEncontradoException("Participacion con id: " + id + " no encontrada"));
@@ -64,7 +64,7 @@ public class ParticipacionesServicesImpl implements ParticipacionesServices {
     }
 
     @Override
-    public Void eliminarParticipacion(Integer id) {
+    public Void eliminar(Integer id) {
         try {
             if (!participacionesRepositorio.existsById(Long.valueOf(id))){
                 throw new RecursoNoEncontradoException("Participacion con el ID:" + id + " no se encuentra.");
