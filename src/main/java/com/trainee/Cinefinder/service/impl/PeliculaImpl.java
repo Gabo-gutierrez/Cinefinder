@@ -10,7 +10,7 @@ import com.trainee.Cinefinder.model.Peliculas;
 import com.trainee.Cinefinder.model.dto.PeliculasDto;
 import com.trainee.Cinefinder.repository.CategoriaRepository;
 import com.trainee.Cinefinder.repository.PeliculaRepository;
-import com.trainee.Cinefinder.service.PeliculasServices;
+import com.trainee.Cinefinder.service.ServicioPelicula;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +19,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class PeliculasServicesImpl implements PeliculasServices {
+public class PeliculaImpl implements ServicioPelicula {
     private final PeliculaRepository peliculasRepositorio;
     private final CategoriaRepository categoriasRespositorio;
 
     @Override
-    public List<PeliculasDto> getPeliculas(){
+    public List<PeliculasDto> consultar() {
         return peliculasRepositorio.findAll()
                 .stream()
                 .map(PeliculasMapper::peliculasToDto)
@@ -39,7 +39,7 @@ public class PeliculasServicesImpl implements PeliculasServices {
     }
 
     @Override
-    public PeliculasDto guardarPelicula(PeliculasDto dto){
+    public PeliculasDto guardar(PeliculasDto dto) {
         Optional<Peliculas> existente = peliculasRepositorio.findByTitulo(dto.titulo());
         if (existente.isPresent()){
             throw new PeliculaTituloYaExistenteException(dto.titulo());
@@ -52,7 +52,7 @@ public class PeliculasServicesImpl implements PeliculasServices {
     }
 
     @Override
-    public PeliculasDto actualizarPelicula(Integer id, PeliculasDto dto) {
+    public PeliculasDto actualizar(Integer id, PeliculasDto dto) {
         try{
             Peliculas pelicula = peliculasRepositorio.findById(id)
                     .orElseThrow(() -> new RecursoNoEncontradoException("Pelicula con id: " + id + " no encontrada"));
@@ -72,7 +72,7 @@ public class PeliculasServicesImpl implements PeliculasServices {
     }
 
     @Override
-    public Void eliminarPelicula(Integer id) {
+    public Void eliminar(Integer id) {
         try {
             if (!peliculasRepositorio.existsById(id)){
                 throw new RecursoNoEncontradoException("Pelicula con el ID:" + id + " no se encuentra.");
