@@ -1,12 +1,15 @@
 package com.trainee.Cinefinder.controller;
 
 import com.trainee.Cinefinder.model.dto.PeliculasDto;
+import com.trainee.Cinefinder.model.dto.SuccessResponse;
 import com.trainee.Cinefinder.service.PeliculasServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,14 +25,19 @@ public class PeliculasController {
     }
 
     @GetMapping("/{titulo}")
-    public Optional<PeliculasDto> findPeliculaByTitulo(@PathVariable String titulo){
-        return peliculasServices.getPeliculasPorTitutlo(titulo);
+    public ResponseEntity<PeliculasDto> findPeliculaByTitulo(@PathVariable String titulo){
+        return peliculasServices.getPeliculasPorTitutlo(titulo)
+                .map(ResponseEntity :: ok).
+                orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping()
     public ResponseEntity<PeliculasDto> guardar(@RequestBody PeliculasDto dto){
         PeliculasDto creada = peliculasServices.guardar(dto);
-        return new ResponseEntity<>(creada, HttpStatus.CREATED);
+//        return new ResponseEntity<>(creada, HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(creada);
     }
 
     @PutMapping("/{id}")
@@ -40,7 +48,17 @@ public class PeliculasController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id){
-        return ResponseEntity.ok(peliculasServices.eliminar(id));
+    public ResponseEntity<SuccessResponse> eliminar(@PathVariable Integer id, WebRequest request){
+//        return ResponseEntity.ok(peliculasServices.eliminar(id));
+        peliculasServices.eliminar(id);
+
+        SuccessResponse response = SuccessResponse.builder()
+                .details("la pelicula con el id: " + id + ". fue eliminada correctamente.")
+                .location(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }
