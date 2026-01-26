@@ -1,14 +1,15 @@
 package com.trainee.Cinefinder.controller;
 
 import com.trainee.Cinefinder.model.dto.ArtistasDto;
+import com.trainee.Cinefinder.model.dto.SuccessResponse;
 import com.trainee.Cinefinder.service.ArtistasServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/artistas")
 @RequiredArgsConstructor
@@ -22,14 +23,16 @@ public class ArtistasController {
   }
 
   @GetMapping("/{dni}")
-  public Optional<ArtistasDto> findArtistaByNombre(@PathVariable Long dni){
-    return artistasServices.getArtistasPorDni(dni);
+  public ResponseEntity<ArtistasDto> findArtistaByNombre(@PathVariable Long dni){
+    return artistasServices.getArtistasPorDni(dni)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping()
   public ResponseEntity<ArtistasDto> crearArtista(@RequestBody ArtistasDto dto){
     ArtistasDto creada = artistasServices.guardarArtista(dto);
-    return new ResponseEntity<>(creada, HttpStatus.CREATED);
+    return ResponseEntity.status(HttpStatus.CREATED).body(creada);
   }
 
   @PutMapping("/{dni}")
@@ -40,7 +43,16 @@ public class ArtistasController {
   }
 
   @DeleteMapping("/{dni}")
-  public ResponseEntity<Void> eliminarArtista(@PathVariable Long dni){
-    return ResponseEntity.ok(artistasServices.eliminarArtista(dni));
+  public ResponseEntity<SuccessResponse> eliminarArtista(@PathVariable Long dni, WebRequest request){
+    artistasServices.eliminarArtista(dni);
+
+    SuccessResponse response = SuccessResponse.builder()
+            .details("el artista con el id: " + dni + ". fue eliminado correctamente.")
+            .location(request.getDescription(false).replace("uri=", ""))
+            .build();
+
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(response);
   }
 }

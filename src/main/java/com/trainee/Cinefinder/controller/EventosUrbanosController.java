@@ -1,14 +1,15 @@
 package com.trainee.Cinefinder.controller;
 
 import com.trainee.Cinefinder.model.dto.EventosUrbanosDto;
+import com.trainee.Cinefinder.model.dto.SuccessResponse;
 import com.trainee.Cinefinder.service.EventosUrbanosServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/eventosUrbanos")
 @RequiredArgsConstructor
@@ -22,14 +23,16 @@ public class EventosUrbanosController {
     }
 
     @GetMapping("/{titulo}")
-    public Optional<EventosUrbanosDto> findEventoUrbanoByTitulo(@PathVariable String titulo){
-        return eventosUrbanosServices.getEventosUrbanosPorTitutlo(titulo);
+    public ResponseEntity<EventosUrbanosDto> findEventoUrbanoByTitulo(@PathVariable String titulo){
+        return eventosUrbanosServices.getEventosUrbanosPorTitutlo(titulo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping()
     public ResponseEntity<EventosUrbanosDto> guardar(@RequestBody EventosUrbanosDto dto){
         EventosUrbanosDto creada = eventosUrbanosServices.guardar(dto);
-        return new ResponseEntity<>(creada, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 
     @PutMapping("/{id}")
@@ -40,7 +43,16 @@ public class EventosUrbanosController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id){
-        return ResponseEntity.ok(eventosUrbanosServices.eliminar(id));
+    public ResponseEntity<SuccessResponse> eliminar(@PathVariable Integer id, WebRequest request){
+        eventosUrbanosServices.eliminar(id);
+
+        SuccessResponse response = SuccessResponse.builder()
+                .details("el evento con el id: " + id + ". fue eliminado correctamente.")
+                .location(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }

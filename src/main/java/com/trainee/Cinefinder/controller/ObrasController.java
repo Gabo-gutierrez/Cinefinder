@@ -1,14 +1,15 @@
 package com.trainee.Cinefinder.controller;
 
 import com.trainee.Cinefinder.model.dto.ObrasDto;
+import com.trainee.Cinefinder.model.dto.SuccessResponse;
 import com.trainee.Cinefinder.service.ObrasServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/Obras")
 @RequiredArgsConstructor
@@ -22,14 +23,18 @@ public class ObrasController {
     }
 
     @GetMapping("/{titulo}")
-    public Optional<ObrasDto> findObraByTitulo(@PathVariable String titulo){
-        return ObrasServices.getObrasPorTitutlo(titulo);
+    public ResponseEntity<ObrasDto> findObraByTitulo(@PathVariable String titulo){
+        return ObrasServices.getObrasPorTitutlo(titulo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping()
     public ResponseEntity<ObrasDto> guardar(@RequestBody ObrasDto dto){
         ObrasDto creada = ObrasServices.guardar(dto);
-        return new ResponseEntity<>(creada, HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(creada);
     }
 
     @PutMapping("/{id}")
@@ -40,7 +45,16 @@ public class ObrasController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id){
-        return ResponseEntity.ok(ObrasServices.eliminar(id));
+    public ResponseEntity<SuccessResponse> eliminar(@PathVariable Integer id, WebRequest request){
+        ObrasServices.eliminar(id);
+
+        SuccessResponse response = SuccessResponse.builder()
+                .details("la obra con el id: " + id + ". fue eliminada correctamente.")
+                .location(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }
