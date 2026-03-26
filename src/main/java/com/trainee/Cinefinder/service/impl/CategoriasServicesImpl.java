@@ -1,8 +1,9 @@
 package com.trainee.Cinefinder.service.impl;
 
+import com.trainee.Cinefinder.exceptions.RecursoNoActualizadoException;
+import com.trainee.Cinefinder.exceptions.RecursoNoEliminadoException;
 import com.trainee.Cinefinder.exceptions.RecursoNoEncontradoException;
-import com.trainee.Cinefinder.exceptions.categorias.CategoriaNoActualizadaException;
-import com.trainee.Cinefinder.exceptions.categorias.CategoriaNombreYaExistenteException;
+import com.trainee.Cinefinder.exceptions.RecursoYaExistenteException;
 import com.trainee.Cinefinder.mapper.CategoriasMapper;
 import com.trainee.Cinefinder.model.Categorias;
 import com.trainee.Cinefinder.model.dto.CategoriasDto;
@@ -30,7 +31,7 @@ public class CategoriasServicesImpl implements CategoriasServices {
     @Override
     public Optional<CategoriasDto> getCategoriasPorNombre(String nombre) {
         Categorias categoria = categoriaRepositorio.findByNombre(nombre)
-                .orElseThrow(() -> new RecursoNoEncontradoException(nombre));
+                .orElseThrow(() -> new RecursoNoEncontradoException("categoria con nombre: " + nombre + " no econtrada."));
 
         return Optional.of(CategoriasMapper.categoriasToDto(categoria));
     }
@@ -39,7 +40,7 @@ public class CategoriasServicesImpl implements CategoriasServices {
     public CategoriasDto guardar(CategoriasDto dto) {
         Optional<Categorias> existente = categoriaRepositorio.findByNombre(dto.nombre());
         if (existente.isPresent()) {
-            throw new CategoriaNombreYaExistenteException(dto.nombre());
+            throw new RecursoYaExistenteException("Categoria", dto.nombre());
         }
         else{
             Categorias categoria = CategoriasMapper.categoriasToEntity(dto);
@@ -60,16 +61,21 @@ public class CategoriasServicesImpl implements CategoriasServices {
             return CategoriasMapper.categoriasToDto(categoria);
         }
         catch (Exception e){
-            throw new CategoriaNoActualizadaException(Integer.valueOf(e.getMessage()));
+            throw new RecursoNoActualizadoException("Categoria", id);
         }
     }
 
     @Override
     public Void eliminar(Integer id) {
-        if (!categoriaRepositorio.existsById(id)) {
-            throw new RecursoNoEncontradoException("Categoría no encontrada con ID: " + id);
+//        if (!categoriaRepositorio.existsById(id)) {
+//            throw new RecursoNoEncontradoException("Categoría no encontrada con ID: " + id);
+//        }
+        try {
+//            categoriaRepositorio.deleteById(id);
+            throw new RecursoNoEliminadoException("categoria", id);
+        } catch (Exception e) {
+            throw new RecursoNoEliminadoException("categoria", id);
         }
-        categoriaRepositorio.deleteById(id);
-        return null;
+//        return null;
     }
 }

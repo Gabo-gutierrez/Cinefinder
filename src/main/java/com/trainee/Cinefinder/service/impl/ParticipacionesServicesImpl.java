@@ -1,8 +1,8 @@
 package com.trainee.Cinefinder.service.impl;
 
+import com.trainee.Cinefinder.exceptions.RecursoNoActualizadoException;
+import com.trainee.Cinefinder.exceptions.RecursoNoEliminadoException;
 import com.trainee.Cinefinder.exceptions.RecursoNoEncontradoException;
-import com.trainee.Cinefinder.exceptions.participaciones.ParticipacionNoActualizadaException;
-import com.trainee.Cinefinder.exceptions.participaciones.ParticipacionNoEliminadaException;
 import com.trainee.Cinefinder.mapper.ParticipacionesMapper;
 import com.trainee.Cinefinder.model.Artistas;
 import com.trainee.Cinefinder.model.Participaciones;
@@ -59,7 +59,7 @@ public class ParticipacionesServicesImpl implements ParticipacionesServices {
             return ParticipacionesMapper.participacionesToDto(participacion);
         }
         catch (Exception e){
-            throw new ParticipacionNoActualizadaException(id, e.getMessage());
+            throw new RecursoNoActualizadoException("Participacion", id);
         }
     }
 
@@ -73,7 +73,7 @@ public class ParticipacionesServicesImpl implements ParticipacionesServices {
             return null;
         }
         catch (Exception e){
-            throw new ParticipacionNoEliminadaException(id, e.getMessage());
+            throw new RecursoNoEliminadoException("Participación", id);
         }
     }
 }

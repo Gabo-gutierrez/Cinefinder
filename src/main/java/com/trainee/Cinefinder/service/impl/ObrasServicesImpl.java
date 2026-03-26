@@ -1,9 +1,9 @@
 package com.trainee.Cinefinder.service.impl;
 
+import com.trainee.Cinefinder.exceptions.RecursoNoActualizadoException;
+import com.trainee.Cinefinder.exceptions.RecursoNoEliminadoException;
 import com.trainee.Cinefinder.exceptions.RecursoNoEncontradoException;
-import com.trainee.Cinefinder.exceptions.obras.ObraNoActualizadaException;
-import com.trainee.Cinefinder.exceptions.obras.ObraNoEliminadaException;
-import com.trainee.Cinefinder.exceptions.obras.ObraTituloYaExistenteException;
+import com.trainee.Cinefinder.exceptions.RecursoYaExistenteException;
 import com.trainee.Cinefinder.mapper.ObrasMapper;
 import com.trainee.Cinefinder.model.Categorias;
 import com.trainee.Cinefinder.model.Obras;
@@ -42,7 +42,7 @@ public class ObrasServicesImpl implements ObrasServices {
     public ObrasDto guardar(ObrasDto dto){
         Optional<Obras> existente = ObrasRepositorio.findByTitulo(dto.titulo());
         if (existente.isPresent()){
-            throw new ObraTituloYaExistenteException(dto.titulo());
+            throw new RecursoYaExistenteException("Obra",dto.titulo());
         }
         else {
             Obras Obra = ObrasMapper.ObrasToEntity(dto);
@@ -67,7 +67,7 @@ public class ObrasServicesImpl implements ObrasServices {
             return ObrasMapper.ObrasToDto(Obra);
         }
         catch (Exception e){
-            throw new ObraNoActualizadaException(id, e.getMessage());
+            throw new RecursoNoActualizadoException("Obra", id);
         }
     }
 
@@ -81,7 +81,7 @@ public class ObrasServicesImpl implements ObrasServices {
             return null;
         }
         catch (Exception e){
-            throw new ObraNoEliminadaException(id, e.getMessage());
+            throw new RecursoNoEliminadoException("Obra", id);
         }
     }
 }

@@ -27,5 +27,5 @@ public class SuccessResponse {
         return LocalDateTime.now();
     }
 
-    public String getType() {return "Success";}
+    public String getType() {return "SUCCESS";}
 }

@@ -1,9 +1,9 @@
 package com.trainee.Cinefinder.service.impl;
 
+import com.trainee.Cinefinder.exceptions.RecursoNoActualizadoException;
+import com.trainee.Cinefinder.exceptions.RecursoNoEliminadoException;
 import com.trainee.Cinefinder.exceptions.RecursoNoEncontradoException;
-import com.trainee.Cinefinder.exceptions.peliculas.PeliculaNoActualizadaException;
-import com.trainee.Cinefinder.exceptions.peliculas.PeliculaNoEliminadaException;
-import com.trainee.Cinefinder.exceptions.peliculas.PeliculaTituloYaExistenteException;
+import com.trainee.Cinefinder.exceptions.RecursoYaExistenteException;
 import com.trainee.Cinefinder.mapper.PeliculasMapper;
 import com.trainee.Cinefinder.model.Categorias;
 import com.trainee.Cinefinder.model.Peliculas;
@@ -42,7 +42,7 @@ public class PeliculasServicesImpl implements PeliculasServices {
     public PeliculasDto guardar(PeliculasDto dto) {
         Optional<Peliculas> existente = peliculasRepositorio.findByTitulo(dto.titulo());
         if (existente.isPresent()){
-            throw new PeliculaTituloYaExistenteException(dto.titulo());
+            throw new RecursoYaExistenteException("Pelicula", dto.titulo());
         }
         else {
             Peliculas pelicula = PeliculasMapper.peliculasToEntity(dto);
@@ -67,7 +67,7 @@ public class PeliculasServicesImpl implements PeliculasServices {
             return PeliculasMapper.peliculasToDto(pelicula);
         }
         catch (Exception e){
-            throw new PeliculaNoActualizadaException(id, e.getMessage());
+            throw new RecursoNoActualizadoException("Pelicula", id);
         }
     }
 
@@ -81,7 +81,7 @@ public class PeliculasServicesImpl implements PeliculasServices {
             return null;
         }
         catch (Exception e){
-            throw new PeliculaNoEliminadaException(id, e.getMessage());
+            throw new RecursoNoEliminadoException("Pelicula", id);
         }
     }
 }

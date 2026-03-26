@@ -19,5 +19,5 @@ public class ErrorResponse {
     private String moreInfo;
     private LocalDateTime timestamp;
 
-    public String getType() {return "error";}
+    public String getType() {return "ERROR";}
 }

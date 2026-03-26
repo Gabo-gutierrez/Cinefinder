@@ -1,8 +1,9 @@
 package com.trainee.Cinefinder.service.impl;
 
+import com.trainee.Cinefinder.exceptions.RecursoNoActualizadoException;
+import com.trainee.Cinefinder.exceptions.RecursoNoEliminadoException;
 import com.trainee.Cinefinder.exceptions.RecursoNoEncontradoException;
-import com.trainee.Cinefinder.exceptions.artistas.ArtistaNoActualizadoException;
-import com.trainee.Cinefinder.exceptions.artistas.ArtistaYaRegistradoException;
+import com.trainee.Cinefinder.exceptions.RecursoYaExistenteException;
 import com.trainee.Cinefinder.mapper.ArtistasMapper;
 import com.trainee.Cinefinder.model.Artistas;
 import com.trainee.Cinefinder.model.dto.ArtistasDto;
@@ -39,7 +40,7 @@ public class ArtistasServicesImpl implements ArtistasServices {
     public ArtistasDto guardarArtista(ArtistasDto dto) {
         Optional<Artistas> existente = artistasRepositorio.findById(dto.dni());
         if(existente.isPresent()) {
-            throw new ArtistaYaRegistradoException(dto.dni());
+            throw new RecursoYaExistenteException("Artista", dto.dni());
         }
         else {
             Artistas artista = ArtistasMapper.artistasToEntity(dto);
@@ -61,7 +62,7 @@ public class ArtistasServicesImpl implements ArtistasServices {
             return ArtistasMapper.artistasToDto(artista);
         }
         catch (Exception e){
-            throw new ArtistaNoActualizadoException(dni, e.getMessage());
+            throw new RecursoNoActualizadoException("Artista", dni);
         }
     }
 
@@ -70,7 +71,9 @@ public class ArtistasServicesImpl implements ArtistasServices {
         if (!artistasRepositorio.existsById(dni)){
             throw new RecursoNoEncontradoException("Artista no encontrado con el DNI: " + dni);
         }
-        artistasRepositorio.deleteById(dni);
+        try {
+            artistasRepositorio.deleteById(dni);
+        } catch (Exception e) { throw new RecursoNoEliminadoException("Artista", dni); }
         return null;
     }
 }
